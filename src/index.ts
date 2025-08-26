@@ -36,7 +36,6 @@
 //   console.log(`🚀 API running on http://localhost:${env.PORT}`);
 // });
 
-
 import express from "express";
 import cors from "cors";
 import { env } from "./config/envv";
@@ -51,10 +50,15 @@ import aiRoutes from "./routes/aiRoutes";
 import costRoutes from "./routes/costRoutes";
 import subscriptionRoutes from "./routes/subscriptionRoutes";
 import securityRoutes from "./routes/securityRoutes";
+import adminRoutes from "./routes/adminRoutes";
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: "*",
+  })
+);
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 
@@ -62,6 +66,7 @@ app.get("/", (_req, res) => {
   res.json({ ok: true, service: "soullinkai-backend", env: env.NODE_ENV });
 });
 
+app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
 app.use("/api/personas", personaRoutes);
 app.use("/api/feedback", feedbackRoutes);

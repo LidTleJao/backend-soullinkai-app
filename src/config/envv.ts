@@ -11,7 +11,10 @@ export const env = {
   FIREBASE_CLIENT_EMAIL: process.env.FIREBASE_CLIENT_EMAIL || "",
   FIREBASE_PRIVATE_KEY: (() => {
     if (process.env.FIREBASE_PRIVATE_KEY_BASE64) {
-      return Buffer.from(process.env.FIREBASE_PRIVATE_KEY_BASE64, "base64").toString("utf8");
+      return Buffer.from(
+        process.env.FIREBASE_PRIVATE_KEY_BASE64,
+        "base64"
+      ).toString("utf8");
     }
     const key = process.env.FIREBASE_PRIVATE_KEY || "";
     return key.replace(/\\n/g, "\n");
@@ -21,7 +24,10 @@ export const env = {
   // xAI (Grok)
   XAI_API_KEY: process.env.XAI_API_KEY || process.env.GROK_API_KEY || "",
   XAI_MODEL: process.env.XAI_MODEL || process.env.GROK_MODEL || "grok-2-latest",
-  XAI_BASE_URL: process.env.XAI_BASE_URL || process.env.GROK_API_BASE || "https://api.x.ai/v1",
+  XAI_BASE_URL:
+    process.env.XAI_BASE_URL ||
+    process.env.GROK_API_BASE ||
+    "https://api.x.ai/v1",
 
   // Encryption
   SECRET_KEY: process.env.SECRET_KEY || "change_me_in_prod", // AES-256 key seed
@@ -34,15 +40,38 @@ export const env = {
   FRONTEND_URL: process.env.FRONTEND_URL || "http://localhost:3000",
 
   // Cost Estimation defaults (ปรับได้)
-  DEFAULT_MODEL_COST_PER_1K_TOKENS: Number(process.env.DEFAULT_MODEL_COST_PER_1K_TOKENS || 0.002),
-  DEFAULT_STORAGE_COST_PER_GB: Number(process.env.DEFAULT_STORAGE_COST_PER_GB || 0.026),
-  DEFAULT_EGRESS_COST_PER_GB: Number(process.env.DEFAULT_EGRESS_COST_PER_GB || 0.12),
-  DEFAULT_READ_COST_PER_100K: Number(process.env.DEFAULT_READ_COST_PER_100K || 0.06),
-  DEFAULT_WRITE_COST_PER_100K: Number(process.env.DEFAULT_WRITE_COST_PER_100K || 0.18),
-  DEFAULT_DELETE_COST_PER_100K: Number(process.env.DEFAULT_DELETE_COST_PER_100K || 0.02),
+  DEFAULT_MODEL_COST_PER_1K_TOKENS: Number(
+    process.env.DEFAULT_MODEL_COST_PER_1K_TOKENS || 0.002
+  ),
+  DEFAULT_STORAGE_COST_PER_GB: Number(
+    process.env.DEFAULT_STORAGE_COST_PER_GB || 0.026
+  ),
+  DEFAULT_EGRESS_COST_PER_GB: Number(
+    process.env.DEFAULT_EGRESS_COST_PER_GB || 0.12
+  ),
+  DEFAULT_READ_COST_PER_100K: Number(
+    process.env.DEFAULT_READ_COST_PER_100K || 0.06
+  ),
+  DEFAULT_WRITE_COST_PER_100K: Number(
+    process.env.DEFAULT_WRITE_COST_PER_100K || 0.18
+  ),
+  DEFAULT_DELETE_COST_PER_100K: Number(
+    process.env.DEFAULT_DELETE_COST_PER_100K || 0.02
+  ),
+
+  SMTP_HOST: process.env.SMTP_HOST || "",
+  SMTP_PORT: process.env.SMTP_PORT || "587",
+  SMTP_SECURE: process.env.SMTP_SECURE || "false",
+  SMTP_USER: process.env.SMTP_USER || "",
+  SMTP_PASS: process.env.SMTP_PASS || "",
+  FROM_EMAIL: process.env.FROM_EMAIL || "",
 };
 
 // แจ้งเตือน env ที่จำเป็น
-["FIREBASE_PROJECT_ID","FIREBASE_CLIENT_EMAIL","FIREBASE_PRIVATE_KEY"].forEach(k=>{
+[
+  "FIREBASE_PROJECT_ID",
+  "FIREBASE_CLIENT_EMAIL",
+  "FIREBASE_PRIVATE_KEY",
+].forEach((k) => {
   if (!(env as any)[k]) console.warn(`[env] Missing ${k}. Check your .env`);
 });
