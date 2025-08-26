@@ -36,11 +36,13 @@
 //   console.log(`🚀 API running on http://localhost:${env.PORT}`);
 // });
 
+import serverless from "serverless-http";
 import express from "express";
 import cors from "cors";
 import { env } from "./config/envv";
 import "./config/firebase";
 import { errorHandler } from "./utils/error";
+import bodyParser from "body-parser";
 
 import authRoutes from "./routes/authRoutes";
 import personaRoutes from "./routes/personaRoutes";
@@ -65,6 +67,7 @@ app.use(express.urlencoded({ extended: true }));
 app.get("/", (_req, res) => {
   res.json({ ok: true, service: "soullinkai-backend", env: env.NODE_ENV });
 });
+app.use(bodyParser.json({ limit: "2mb" }));
 
 app.use("/api/admin", adminRoutes);
 app.use("/api/auth", authRoutes);
@@ -83,4 +86,4 @@ app.listen(env.PORT, () => {
   console.log(`🚀 API running on http://localhost:${env.PORT}`);
 });
 
-export { app };
+export default serverless(app);

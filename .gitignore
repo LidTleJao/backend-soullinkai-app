@@ -15,3 +15,4 @@ yarn-error.log*
 
 # Others
 .DS_Store
+.vercel
