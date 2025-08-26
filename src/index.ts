@@ -36,7 +36,7 @@
 //   console.log(`🚀 API running on http://localhost:${env.PORT}`);
 // });
 
-import serverless from "serverless-http";
+// import serverless from "serverless-http";
 import express from "express";
 import cors from "cors";
 import { env } from "./config/envv";
@@ -86,4 +86,4 @@ app.listen(env.PORT, () => {
   console.log(`🚀 API running on http://localhost:${env.PORT}`);
 });
 
-export default serverless(app);
+export default app;

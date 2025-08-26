@@ -1,11 +1,11 @@
-// import  app  from "./src/index";
+import  app  from "./src/index";
 // import { db } from "./src/config/firebase";
 
-// const port = process.env.port || 5000;
+const port = process.env.port || 5000;
 
 // // server.listen(port, () =>{
 // //     console.log("Server is Open!!!");
 // // });
-// app.listen(port, () => {
-//   console.log(` Server running on http://localhost:${port}`);
-// });
+app.listen(port, () => {
+  console.log(` Server running on http://localhost:${port}`);
+});
