@@ -61,8 +61,8 @@ app.use(
     origin: "*",
   })
 );
-app.use(express.json({ limit: "10mb" }));
-app.use(express.urlencoded({ extended: true, limit: "2mb"  }));
+app.use(express.json({ limit: "5mb" }));
+app.use(express.urlencoded({ extended: true}));
 
 app.get("/", (_req, res) => {
   res.json({ ok: true, service: "soullinkai-backend", env: env.NODE_ENV });
