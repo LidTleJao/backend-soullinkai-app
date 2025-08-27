@@ -34,5 +34,8 @@
     "multer": "^2.0.2",
     "nodemailer": "^7.0.5",
     "stripe": "^18.4.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   }
 }
