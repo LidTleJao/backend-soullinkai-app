@@ -26,11 +26,12 @@ if (!admin.apps.length) {
     }),
     // (ถ้าใช้ Storage)
     // storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
-    storageBucket: "website-soullinkai-563d7.firebasestorage.app",
+    // storageBucket: "website-soullinkai-563d7.firebasestorage.app",
+    storageBucket: `${projectId}.appspot.com`,
   });
 }
 
 export const db = admin.firestore();
 export const auth = admin.auth();
 export const FieldValue = admin.firestore.FieldValue;
-export const bucket = admin.storage().bucket?.();
+export const bucket = admin.storage().bucket();
