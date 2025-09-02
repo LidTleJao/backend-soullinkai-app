@@ -17,8 +17,13 @@ if (!privateKey) throw new Error("ENV FIREBASE_PRIVATE_KEY is missing");
 // Render/Vercel เก็บเป็น single-line -> ต้อง replace
 privateKey = privateKey.replace(/\\n/g, "\n");
 
-const storageBucketAdmin =
-  process.env.FIREBASE_STORAGE_BUCKET_ADMIN || `${projectId}.appspot.com`;
+// const storageBucket =
+//   process.env.FIREBASE_STORAGE_BUCKET || `${projectId}.appspot.com`;
+
+const storageBucket = process.env.FIREBASE_STORAGE_BUCKET || "";
+
+// const storageBucketAdmin =
+//   process.env.FIREBASE_STORAGE_BUCKET_ADMIN || `${projectId}.appspot.com`;
 
 if (!admin.apps.length) {
   admin.initializeApp({
@@ -30,7 +35,8 @@ if (!admin.apps.length) {
     // (ถ้าใช้ Storage)
     // storageBucket: process.env.FIREBASE_STORAGE_BUCKET,
     // storageBucket: "website-soullinkai-563d7.firebasestorage.app",
-    storageBucket: storageBucketAdmin,
+    // storageBucket: storageBucketAdmin,
+    storageBucket: storageBucket,
   });
 }
 
