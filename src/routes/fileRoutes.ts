@@ -190,4 +190,89 @@ router.post("/save-json/:personaId", requireAuth, async (req, res) => {
   }
 });
 
+// --- LIST ไฟล์ JSON ของ persona ---
+router.get("/list-json/:personaId", requireAuth, async (req, res) => {
+  const uid = (req as any).user.uid;
+  const personaId = req.params.personaId;
+
+  try {
+    if (!personaId) return res.status(400).json({ error: "Missing persona id" });
+
+    const ref = db.collection(COL).doc(personaId);
+    const snap = await ref.get();
+    if (!snap.exists) return res.status(404).json({ error: "Persona not found" });
+
+    const data = snap.data() as any;
+    if (data?.ownerUid !== uid) return res.status(403).json({ error: "Forbidden" });
+
+    const items = Array.isArray(data?.jsonFiles) ? data.jsonFiles : [];
+    // แน่ใจว่ามีเฉพาะ kind ที่รองรับ
+    const allowed = new Set(["personality", "history", "memory"]);
+    const rows = await Promise.all(
+      items
+        .filter((it: any) => it?.path && allowed.has(it?.kind))
+        .map(async (it: any) => {
+          let signedUrl: string | null = null;
+          try {
+            signedUrl = await getSignedUrl(it.path);
+          } catch {
+            signedUrl = null;
+          }
+          return {
+            kind: it.kind,
+            path: it.path,
+            updatedAt: it.updatedAt?.toDate
+              ? it.updatedAt.toDate().toISOString()
+              : it.updatedAt || null,
+            signedUrl,
+          };
+        })
+    );
+
+    // เรียงล่าสุดก่อน (ถ้ามี updatedAt)
+    rows.sort((a: any, b: any) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
+    return res.json(rows);
+  } catch (err: any) {
+    console.error("[list-json] error:", err?.message, err);
+    return res
+      .status(500)
+      .json({ error: "list-json failed", detail: err?.message || String(err) });
+  }
+});
+
+// --- อ่านเนื้อหาไฟล์ JSON ตาม kind ---
+router.get("/json/:personaId/:kind", requireAuth, async (req, res) => {
+  const uid = (req as any).user.uid;
+  const { personaId, kind } = req.params as { personaId: string; kind: "personality" | "history" | "memory" };
+
+  try {
+    if (!personaId) return res.status(400).json({ error: "Missing persona id" });
+    if (!["personality", "history", "memory"].includes(kind))
+      return res.status(400).json({ error: "Invalid kind" });
+
+    const ref = db.collection(COL).doc(personaId);
+    const snap = await ref.get();
+    if (!snap.exists) return res.status(404).json({ error: "Persona not found" });
+    if (snap.data()?.ownerUid !== uid) return res.status(403).json({ error: "Forbidden" });
+
+    const filePath = `users/${uid}/personas/${personaId}/json/${kind}.json`;
+    const file = bucket.file(filePath);
+
+    const [exists] = await file.exists();
+    if (!exists) return res.status(404).json({ error: "File not found" });
+
+    const [buf] = await file.download(); // Buffer
+    // ส่งกลับเป็นข้อความ (ให้ฝั่งหน้าอ่าน/แสดงเอง)
+    res.setHeader("Content-Type", "application/json; charset=utf-8");
+    return res.send(buf.toString("utf8"));
+  } catch (err: any) {
+    console.error("[get-json] error:", err?.message, err);
+    return res
+      .status(500)
+      .json({ error: "get-json failed", detail: err?.message || String(err) });
+  }
+});
+
+
+
 export default router;
